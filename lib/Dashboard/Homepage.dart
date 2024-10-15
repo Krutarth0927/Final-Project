@@ -33,7 +33,8 @@ class _HomepageState extends State<Homepage> {
   void _loadStudentName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      fullName = prefs.getString('fullName') ?? 'fullName'; // Default name if null
+      fullName = prefs.getString('fullName') ?? 'fullName';
+      // Default name if null
     });
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../database/allDatabase.dart';
 import 'package:stayez/color.dart';
-import 'package:stayez/database/allDatabase.dart';
 
 class RegisterTable extends StatelessWidget {
   @override

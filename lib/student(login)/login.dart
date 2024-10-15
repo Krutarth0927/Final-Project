@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stayez/color.dart';
@@ -49,7 +51,8 @@ class _LoginPageState extends State<LoginPage> {
         prefs1.setBool('isLoggedIn', true);
         prefs1.setBool('isAdmin', false);
         prefs1.setString('userId', user['mobileNo'].toString()); // Store userId as a String
-
+        prefs1.setString('fullName', user['fullName']).toString();
+        prefs1.setString('roomNo', user['roomNo']).toString();
         // Navigate to the HomePage
         Navigator.pushReplacement(
           context,

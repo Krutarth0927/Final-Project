@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../database/allDatabase.dart';
 import 'package:stayez/color.dart';
 
@@ -17,9 +18,23 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
     'Product Defect',
   ];
 
+  final TextEditingController roomNoController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  void _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedData = prefs.getString('roomNo');
+    setState(() {
+      roomNoController.text = savedData ?? 'no data';
+    });
+  }
   String? _selectedComplaint;
   String? _complaintDetails;
-  String? _roomNo; // Room number variable
+  // String? _roomNo; // Room number variable
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +70,8 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
                   ),
                   SizedBox(height: 10),
                   TextFormField(
+                    readOnly: true,
+                    controller: roomNoController,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: white,
@@ -65,9 +82,6 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
                       ),
                     ),
                     keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      _roomNo = value;
-                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your room number';
@@ -163,7 +177,7 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
                         if (_formKey.currentState!.validate()) {
                           // Save the data to the database
                           Map<String, String> complaintData = {
-                            'room_no': _roomNo!,
+                            'room_no': roomNoController.text,
                             'complaint_type': _selectedComplaint!,
                             'complaint_details': _complaintDetails!,
                           };

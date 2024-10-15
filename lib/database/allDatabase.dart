@@ -28,26 +28,25 @@ class DatabaseHelper {
 
   Future _onCreate(Database db, int version) async {
     // Create Users table
-    await db.execute('''
-      CREATE TABLE Users(
-        fullName TEXT,
-        dob TEXT,
-        mobileNo TEXT PRIMARY KEY,
-        address TEXT,
-        collageName TEXT,
-        currentCourse TEXT,
-        yearOfStudy TEXT,
-        parentName TEXT,
-        parentContactNo TEXT,
-        roomNo TEXT,
-        password TEXT
-      )
-    ''');
+    await db.execute(
+      'CREATE TABLE Users( '
+          'fullName TEXT,'
+          ' dob TEXT, '
+          'mobileNo TEXT PRIMARY KEY,'
+          ' address TEXT, '
+          'collageName TEXT,'
+          ' currentCourse TEXT, '
+          'yearOfStudy TEXT,'
+          ' parentName TEXT,'
+          ' parentContactNo TEXT, '
+          'roomNo TEXT ,'
+          'password TEXT)',
+    );
 
     // Create Register table
     await db.execute('''
       CREATE TABLE register (
-        _id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
         room_no TEXT NOT NULL,
         entry_date_time TEXT NOT NULL,

@@ -48,22 +48,33 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   @override
   void dispose() {
-    fullNameController.dispose();
     super.dispose();
   }
-  Future<void> _saveStudentName(String fullName) async {
+  // Future<void> _saveStudentName(String fullName) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('fullName', fullName);
+  //   await prefs.setString('roomNo', roomNoController.text);
+  // //
+  // }
+  void _saveData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('fullName', fullName);
-    // await prefs.setString('roomNo', roomNoController.text);
-  //
+    await prefs.setString('roomNo', roomNoController.text);
+    // Navigate to SecondPage after saving
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DailyRegisterForm()),
+    );
   }
+
 
 
   void _saveForm() async {
-
-      // String fullName = fullNameController.text;
-      // _saveStudentName(fullName);
-      // Navigator.pop(context); // Return to the homepage or navigate accordingly
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  // //  await prefs.setString('fullName', fullNameController.text); // Save first text box data
+  // //   await prefs.setString('roomNO', roomNoController.text);
+  // //     String fullName = fullNameController.text;
+  //     _saveStudentName(fullNameController.text);
+     // Navigator.pop(context); // Return to the homepage or navigate accordingly
 
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -84,7 +95,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
       DatabaseHelper db = DatabaseHelper();
       int userId = await db.saveUser(user); // Save and get the inserted ID
-
       print(userId);
       Navigator.push(
         context,
@@ -191,12 +201,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => DailyRegisterForm(),
-                      //   ),
-                      // );
+
                       return 'Please enter your Room number';
                     }
                     return null;

@@ -1,35 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; // Import for formatting dates and times.
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stayez/category/register_table.dart';
+import '../database/allDatabase.dart';
 import 'package:stayez/color.dart';
-import 'package:stayez/database/allDatabase.dart';
+import 'register_table.dart';
 
 class DailyRegisterForm extends StatefulWidget {
-
-
   @override
   _DailyRegisterFormState createState() => _DailyRegisterFormState();
 }
 class _DailyRegisterFormState extends State<DailyRegisterForm> {
-  @override
-  void initState() {
-    super.initState();
-    _loadRoomNumber(); // Load room number when the widget is initialized
-  }
-
-  Future<void> _loadRoomNumber() async {
-    // Get shared preferences instance
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // Load the saved room number
-    String? roomNo = prefs.getString('roomNo');
-    setState(() {
-      roomNoController.text = roomNo ?? ''; // Set the loaded room number
-    });
-  }
-
-
-
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final roomNoController = TextEditingController();
@@ -39,6 +19,22 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
 
   // Get the current date.
   final String currentDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  void _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedData = prefs.getString('roomNo');
+    String? savedData1 = prefs.getString('fullName');
+    setState(() {
+      nameController.text = savedData1 ?? 'no data';
+      roomNoController.text = savedData ?? 'no data';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,43 +69,58 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                     ),
                   ),
                   SizedBox(height: 20),
+
+                  // Name field (Editable)
                   _buildTextFormField(
                     controller: nameController,
                     labelText: "Name",
                     icon: Icons.person,
                   ),
                   SizedBox(height: 20),
+
+                  // Room No field (Editable)
                   _buildTextFormField(
-                    controller: roomNoController, // This is the controller for the Room No field
+                    controller: roomNoController,
                     labelText: "Room No",
                     icon: Icons.meeting_room,
-                    keyboardType: TextInputType.number, // Numeric input
+                    keyboardType: TextInputType.number,
                   ),
                   SizedBox(height: 20),
+
+                  // Date field (Read-only)
                   _buildDateField(
                     labelText: "Date",
                     icon: Icons.calendar_today,
                     date: currentDate, // Display current date
                   ),
                   SizedBox(height: 20),
+
+                  // Entry Time field (Read-only with picker)
                   _buildTimeField(
                     controller: entryTimeController,
                     labelText: "Entry Time",
                     icon: Icons.access_time,
                   ),
                   SizedBox(height: 20),
+
+                  // Exit Time field (Read-only with picker)
                   _buildTimeField(
                     controller: exitTimeController,
                     labelText: "Exit Time",
                     icon: Icons.exit_to_app,
                   ),
                   SizedBox(height: 20),
+
+                  // Reason field (Read-only)
                   _buildTextFormField(
                     controller: reasonController,
                     labelText: "Reason",
                     icon: Icons.text_snippet,
+                    readOnly: false,  // Make this field read-only
                   ),
+
                   SizedBox(height: 30),
+
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
@@ -179,15 +190,18 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
     );
   }
 
+  // Widget to build text form fields
   Widget _buildTextFormField({
     required TextEditingController controller,
     required String labelText,
     required IconData icon,
     TextInputType keyboardType = TextInputType.text, // Default to text input
+    bool readOnly = true, // Add a readOnly property (default false)
   }) {
     return TextFormField(
       controller: controller,
-      keyboardType: keyboardType, // Set keyboard type
+      keyboardType: keyboardType,
+      readOnly: readOnly, // Set field as read-only if needed
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: Icon(icon, color: black),
@@ -208,6 +222,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
     );
   }
 
+  // Widget for the Time field (already read-only with a picker)
   Widget _buildTimeField({
     required TextEditingController controller,
     required String labelText,
