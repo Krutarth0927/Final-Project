@@ -20,7 +20,8 @@ class _StaffPageState extends State<StaffPage> {
     if (staffJson != null) {
       final List<dynamic> decoded = jsonDecode(staffJson);
       setState(() {
-        staffMembers = decoded.map((staff) => StaffMember.fromJson(staff)).toList();
+        staffMembers =
+            decoded.map((staff) => StaffMember.fromJson(staff)).toList();
       });
     }
   }
@@ -49,12 +50,12 @@ class _StaffPageState extends State<StaffPage> {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35.0),
-                child: Text(
-                  "Staff Members",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: const EdgeInsets.only(right: 35.0),
+            child: Text(
+              "Staff Members",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
         ),
         body: ListView.builder(
           itemCount: staffMembers.length,
@@ -69,8 +70,15 @@ class _StaffPageState extends State<StaffPage> {
                   color: accentColor,
                   child: ListTile(
                     title: Text("Name: ${staff.name}"),
-                    subtitle: Text("Role: ${staff.role}\nPhone: ${staff.phone}",style: TextStyle(color: black,fontSize:20,fontWeight: FontWeight.bold ),),
-                    onTap: () => _launchPhone(staff.phone), // Make phone number clickable
+                    subtitle: Text(
+                      "Role: ${staff.role}\nPhone: ${staff.phone}",
+                      style: TextStyle(
+                          color: black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onTap: () => _launchPhone(
+                        staff.phone), // Make phone number clickable
                   ),
                 ),
               ),

@@ -8,7 +8,7 @@ import 'dart:io';
 
 import 'package:stayez/color.dart';
 import '../database/allDatabase.dart';
- // Import the DatabaseHelper class
+// Import the DatabaseHelper class
 
 class AdminPage extends StatefulWidget {
   @override
@@ -36,7 +36,6 @@ class _AdminPageState extends State<AdminPage> {
     });
   }
 
-
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -59,12 +58,17 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> _saveData() async {
+    if (_instructionController.text.isEmpty) {
+      _showSimpleMessage(
+          'Please fill all the fields and upload the required files.');
+      return; // Don't save if any field is empty
+    }
+
     await _databaseHelper.insertData(
       _instructionController.text,
       _imagePath,
       _documentPath,
     );
-
     _showSimpleMessage('Data saved successfully');
     _loadData(); // Refresh the data after saving
   }
@@ -79,7 +83,7 @@ class _AdminPageState extends State<AdminPage> {
     // showDialog(
     //   context: context,
     //builder:
-        (BuildContext context) {
+    (BuildContext context) {
       return AlertDialog(
         title: Text('Message'),
         content: Text(message),
@@ -106,119 +110,120 @@ class _AdminPageState extends State<AdminPage> {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35),
-                child: Text(
-                  'Admin Add Instruction Page',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: const EdgeInsets.only(right: 35),
+            child: Text(
+              'Admin Add Instruction Page',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
         ),
         body: _isLoading
             ? Center(child: CircularProgressIndicator())
             : Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                controller: _instructionController,
-                decoration: InputDecoration(labelText: 'Instructions'),
-              ),
-              SizedBox(height: 16.0),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ElevatedButton(
-                      onPressed: _pickImage,
-                      child: Text(
-                        'Upload Image',
-                        style: TextStyle(color: black),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
+                    TextField(
+                      controller: _instructionController,
+                      decoration: InputDecoration(labelText: 'Instructions'),
+                    ),
+                    SizedBox(height: 16.0),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                            onPressed: _pickImage,
+                            child: Text(
+                              'Upload Image',
+                              style: TextStyle(color: black),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: buttonColor,
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: _pickDocument,
+                            child: Text(
+                              'Upload Document',
+                              style: TextStyle(color: black),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: buttonColor,
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: _saveData,
+                            child: Text('Save', style: TextStyle(color: black)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: buttonColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: _pickDocument,
-                      child: Text(
-                        'Upload Document',
-                        style: TextStyle(color: black),
+                    if (_imagePath != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Image.file(File(_imagePath!), height: 100),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: _saveData,
-                      child: Text('Save', style: TextStyle(color: black)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
-                      ),
+                    SizedBox(height: 16.0),
+                    if (_documentPath != null)
+                      Text('Document: ${basename(_documentPath!)}'),
+                    SizedBox(height: 16.0),
+                    Divider(color: black, thickness: 2),
+                    Expanded(
+                      child: _data.isEmpty
+                          ? Center(child: Text('No data available'))
+                          : ListView.builder(
+                              itemCount: _data.length,
+                              itemBuilder: (context, index) {
+                                final item = _data[index];
+                                return Card(
+                                  color: accentColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  margin: EdgeInsets.all(8.0),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            'Instructions: ${item['instruction']}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        if (item['imagePath'] != null &&
+                                            File(item['imagePath'])
+                                                .existsSync())
+                                          Image.file(File(item['imagePath']),
+                                              height: 100),
+                                        if (item['documentPath'] != null)
+                                          Text(
+                                              'Document: ${basename(item['documentPath'])}'),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: IconButton(
+                                            icon: Icon(Icons.delete,
+                                                color: black),
+                                            onPressed: () =>
+                                                _deleteData(item['id']),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                     ),
                   ],
                 ),
               ),
-              if (_imagePath != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Image.file(File(_imagePath!), height: 100),
-                ),
-              SizedBox(height: 16.0),
-              if (_documentPath != null)
-                Text('Document: ${basename(_documentPath!)}'),
-              SizedBox(height: 16.0),
-              Divider(color: black, thickness: 2),
-              Expanded(
-                child: _data.isEmpty
-                    ? Center(child: Text('No data available'))
-                    : ListView.builder(
-                  itemCount: _data.length,
-                  itemBuilder: (context, index) {
-                    final item = _data[index];
-                    return Card(
-                      color: accentColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      margin: EdgeInsets.all(8.0),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                'Instructions: ${item['instruction']}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                            if (item['imagePath'] != null &&
-                                File(item['imagePath'])
-                                    .existsSync())
-                              Image.file(File(item['imagePath']),
-                                  height: 100),
-                            if (item['documentPath'] != null)
-                              Text(
-                                  'Document: ${basename(item['documentPath'])}'),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                icon: Icon(Icons.delete, color: black),
-                                onPressed: () =>
-                                    _deleteData(item['id']),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

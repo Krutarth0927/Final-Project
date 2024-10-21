@@ -7,7 +7,8 @@ import 'package:stayez/color.dart';
 
 class AdminServiceProviderPage extends StatefulWidget {
   @override
-  _AdminServiceProviderPageState createState() => _AdminServiceProviderPageState();
+  _AdminServiceProviderPageState createState() =>
+      _AdminServiceProviderPageState();
 }
 
 class _AdminServiceProviderPageState extends State<AdminServiceProviderPage> {
@@ -25,7 +26,9 @@ class _AdminServiceProviderPageState extends State<AdminServiceProviderPage> {
     if (serviceProviderJson != null) {
       final List<dynamic> decoded = jsonDecode(serviceProviderJson);
       setState(() {
-        serviceProviders = decoded.map((service) => ServiceProvider.fromJson(service)).toList();
+        serviceProviders = decoded
+            .map((service) => ServiceProvider.fromJson(service))
+            .toList();
       });
     }
   }
@@ -33,7 +36,7 @@ class _AdminServiceProviderPageState extends State<AdminServiceProviderPage> {
   Future<void> _saveServiceProviders() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> serviceProviderJson =
-    serviceProviders.map((service) => service.toJson()).toList();
+        serviceProviders.map((service) => service.toJson()).toList();
     await prefs.setString('serviceProviders', jsonEncode(serviceProviderJson));
   }
 
@@ -44,7 +47,8 @@ class _AdminServiceProviderPageState extends State<AdminServiceProviderPage> {
     });
   }
 
-  void updateServiceProvider(int serviceId, String newName, String newRole, String newPhone) {
+  void updateServiceProvider(
+      int serviceId, String newName, String newRole, String newPhone) {
     setState(() {
       final service = serviceProviders.firstWhere((s) => s.id == serviceId);
       service.name = newName;
@@ -70,9 +74,9 @@ class _AdminServiceProviderPageState extends State<AdminServiceProviderPage> {
           backgroundColor: accentColor,
           title: Center(
               child: Text(
-                "Service Provider Management",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
+            "Service Provider Management",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
           actions: [
             IconButton(
               icon: Icon(
@@ -100,7 +104,8 @@ class _AdminServiceProviderPageState extends State<AdminServiceProviderPage> {
                 color: accentColor,
                 child: ListTile(
                   title: Text("Name: ${service.name}"),
-                  subtitle: Text("Role: ${service.role} \nPhone: ${service.phone}" ),
+                  subtitle:
+                      Text("Role: ${service.role} \nPhone: ${service.phone}"),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -141,8 +146,9 @@ class _AdminServiceProviderPageState extends State<AdminServiceProviderPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    AddServiceProviderPage(onServiceAdded: addServiceProvider, serviceProviders: serviceProviders),
+                builder: (context) => AddServiceProviderPage(
+                    onServiceAdded: addServiceProvider,
+                    serviceProviders: serviceProviders),
               ),
             );
           },
@@ -189,7 +195,8 @@ class AddServiceProviderPage extends StatelessWidget {
   final Function(ServiceProvider) onServiceAdded;
   final List<ServiceProvider> serviceProviders;
 
-  AddServiceProviderPage({required this.onServiceAdded, required this.serviceProviders});
+  AddServiceProviderPage(
+      {required this.onServiceAdded, required this.serviceProviders});
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _roleController = TextEditingController();
@@ -204,12 +211,12 @@ class AddServiceProviderPage extends StatelessWidget {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35),
-                child: Text(
-                  "Add Service Provider",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: const EdgeInsets.only(right: 35),
+            child: Text(
+              "Add Service Provider",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -264,7 +271,8 @@ class EditServiceProviderPage extends StatelessWidget {
   final ServiceProvider service;
   final Function(int, String, String, String) onServiceUpdated;
 
-  EditServiceProviderPage({required this.service, required this.onServiceUpdated});
+  EditServiceProviderPage(
+      {required this.service, required this.onServiceUpdated});
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _roleController = TextEditingController();
@@ -317,7 +325,8 @@ class EditServiceProviderPage extends StatelessWidget {
                       _roleController.text, _phoneController.text);
                   Navigator.of(context).pop();
                 },
-                child: Text("Update Service Provider", style: TextStyle(color: black)),
+                child: Text("Update Service Provider",
+                    style: TextStyle(color: black)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: buttonColor,
                 ),

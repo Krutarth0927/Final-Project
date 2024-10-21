@@ -6,7 +6,6 @@ import 'package:path/path.dart';
 import 'package:stayez/color.dart';
 import 'package:stayez/database/allDatabase.dart';
 
-
 class Update extends StatefulWidget {
   @override
   _UpdatePageState createState() => _UpdatePageState();
@@ -42,6 +41,7 @@ class _UpdatePageState extends State<Update> {
     OpenFile.open(
         documentPath); // Use this method to open documents with native apps
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -62,38 +62,38 @@ class _UpdatePageState extends State<Update> {
         body: _data.isEmpty
             ? Center(child: Text('No data available'))
             : ListView.builder(
-          itemCount: _data.length,
-          itemBuilder: (context, index) {
-            final item = _data[index];
-            return Card(
-              color: accentColor,
-              margin: EdgeInsets.all(8.0),
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Instructions: ${item['instruction']}'),
-                    if (item['imagePath'] != null &&
-                        File(item['imagePath']).existsSync())
-                      GestureDetector(
-                        onTap: () => _openImageFullScreen(context,
-                            item['imagePath']), // Pass the context here
-                        child: Image.file(File(item['imagePath']),
-                            height: 100),
+                itemCount: _data.length,
+                itemBuilder: (context, index) {
+                  final item = _data[index];
+                  return Card(
+                    color: accentColor,
+                    margin: EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Instructions: ${item['instruction']}'),
+                          if (item['imagePath'] != null &&
+                              File(item['imagePath']).existsSync())
+                            GestureDetector(
+                              onTap: () => _openImageFullScreen(context,
+                                  item['imagePath']), // Pass the context here
+                              child: Image.file(File(item['imagePath']),
+                                  height: 100),
+                            ),
+                          if (item['documentPath'] != null)
+                            ListTile(
+                              title: Text(
+                                  'Document: ${basename(item['documentPath'])}'),
+                              onTap: () => _openDocument(item['documentPath']),
+                            ),
+                        ],
                       ),
-                    if (item['documentPath'] != null)
-                      ListTile(
-                        title: Text(
-                            'Document: ${basename(item['documentPath'])}'),
-                        onTap: () => _openDocument(item['documentPath']),
-                      ),
-                  ],
-                ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }

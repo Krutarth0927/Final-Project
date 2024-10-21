@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stayez/category/staffmember.dart';
 import 'package:stayez/color.dart';
 
-
 class AdminStaffMemberPage extends StatefulWidget {
   @override
   _AdminStaffMemberPageState createState() => _AdminStaffMemberPageState();
@@ -26,7 +25,8 @@ class _AdminStaffMemberPageState extends State<AdminStaffMemberPage> {
     if (staffJson != null) {
       final List<dynamic> decoded = jsonDecode(staffJson);
       setState(() {
-        staffMembers = decoded.map((staff) => StaffMember.fromJson(staff)).toList();
+        staffMembers =
+            decoded.map((staff) => StaffMember.fromJson(staff)).toList();
       });
     }
   }
@@ -34,7 +34,7 @@ class _AdminStaffMemberPageState extends State<AdminStaffMemberPage> {
   Future<void> _saveStaffMembers() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> staffJson =
-    staffMembers.map((staff) => staff.toJson()).toList();
+        staffMembers.map((staff) => staff.toJson()).toList();
     await prefs.setString('staffMembers', jsonEncode(staffJson));
   }
 
@@ -45,7 +45,8 @@ class _AdminStaffMemberPageState extends State<AdminStaffMemberPage> {
     });
   }
 
-  void updateStaffMember(int staffId, String newName, String newRole, String newPhone) {
+  void updateStaffMember(
+      int staffId, String newName, String newRole, String newPhone) {
     setState(() {
       final staff = staffMembers.firstWhere((s) => s.id == staffId);
       staff.name = newName;
@@ -71,9 +72,9 @@ class _AdminStaffMemberPageState extends State<AdminStaffMemberPage> {
           backgroundColor: accentColor,
           title: Center(
               child: Text(
-                "Staff Management",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
+            "Staff Management",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
           actions: [
             IconButton(
               icon: Icon(
@@ -142,8 +143,8 @@ class _AdminStaffMemberPageState extends State<AdminStaffMemberPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    AddStaffPage(onStaffAdded: addStaffMember, staffMembers: staffMembers),
+                builder: (context) => AddStaffPage(
+                    onStaffAdded: addStaffMember, staffMembers: staffMembers),
               ),
             );
           },
@@ -205,12 +206,12 @@ class AddStaffPage extends StatelessWidget {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35),
-                child: Text(
-                  "Add Staff Member",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: const EdgeInsets.only(right: 35),
+            child: Text(
+              "Add Staff Member",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),

@@ -25,9 +25,12 @@ class _AdminComplaintViewState extends State<AdminComplaintView> {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35),
-                child: Text('Complaint Box',style: TextStyle(fontWeight: FontWeight.bold),),
-              )),
+            padding: const EdgeInsets.only(right: 35),
+            child: Text(
+              'Complaint Box',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),

@@ -11,16 +11,14 @@ import 'package:stayez/category/register_form.dart';
 import 'package:stayez/category/rules.dart';
 import 'package:stayez/color.dart';
 
-
 class Homepage extends StatefulWidget {
-  const Homepage({super.key });
+  const Homepage({super.key});
 
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
-
   String? fullName;
 
   @override
@@ -94,15 +92,13 @@ class _HomepageState extends State<Homepage> {
     'assets/slider/5.png',
   ];
 
-
-
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope (
-      onWillPop: () async{
+    return WillPopScope(
+      onWillPop: () async {
         _exitApp(context); // Custom method to show exit confirmation dialog
         return false;
       },
@@ -129,7 +125,6 @@ class _HomepageState extends State<Homepage> {
                         color: black,
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -142,25 +137,23 @@ class _HomepageState extends State<Homepage> {
                 Text(
                   'Welcome, $fullName',
                   style: TextStyle(
-                    fontSize: 20,
-                    color: black,fontWeight: FontWeight.bold
-                  ),
+                      fontSize: 20, color: black, fontWeight: FontWeight.bold),
                 ),
                 // Image Slider
                 CarouselSlider(
                   items: imgList
                       .map((item) => Container(
-                    child: Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Image.asset(
-                            item,
-                            fit: BoxFit.cover,
-                            width: 1000,
-                            height: 500,
-                          ),
-                        )),
-                  ))
+                            child: Center(
+                                child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: Image.asset(
+                                item,
+                                fit: BoxFit.cover,
+                                width: 1000,
+                                height: 500,
+                              ),
+                            )),
+                          ))
                       .toList(),
                   carouselController: _controller,
                   options: CarouselOptions(
@@ -218,8 +211,8 @@ class _HomepageState extends State<Homepage> {
                         color: index % 3 == 0
                             ? Colors.deepPurple.shade200
                             : index % 3 == 1
-                            ? Colors.lightBlueAccent.shade100
-                            : Colors.red.shade200,
+                                ? Colors.lightBlueAccent.shade100
+                                : Colors.red.shade200,
                       );
                     },
                   ),
@@ -234,27 +227,27 @@ class _HomepageState extends State<Homepage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _buildCardView(
-                                context, Icons.rule, accentColor, HostelRulesPage()),
+                            _buildCardView(context, Icons.rule, accentColor,
+                                HostelRulesPage()),
                             _buildCardView(
                                 context, Icons.update, accentColor, Update()),
                             _buildCardView(context, Icons.door_back_door,
                                 accentColor, StudentPage()),
-                            _buildCardView(context, Icons.timelapse, accentColor,
-                                DailyRegisterForm()),
+                            _buildCardView(context, Icons.timelapse,
+                                accentColor, DailyRegisterForm()),
                           ],
                         ),
                       ),
                     ),
                     Positioned(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            "Category",
-                            style:
-                            TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
-                        )),
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        "Category",
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    )),
                     Positioned(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 300),
@@ -262,7 +255,8 @@ class _HomepageState extends State<Homepage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Category()),
+                              MaterialPageRoute(
+                                  builder: (context) => Category()),
                             );
                           },
                           child: Text(
@@ -282,7 +276,6 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-
   Widget _buildCardView(
       BuildContext context, IconData icon, Color color, Widget pageToNavigate) {
     return GestureDetector(
@@ -296,7 +289,7 @@ class _HomepageState extends State<Homepage> {
         color: color,
         child: Padding(
           padding:
-          const EdgeInsets.only(top: 15, bottom: 10, left: 20, right: 20),
+              const EdgeInsets.only(top: 15, bottom: 10, left: 20, right: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -327,7 +320,6 @@ class _HomepageState extends State<Homepage> {
             onPressed: () {
               // Exit the app
               exit(0);
-
             },
             child: Text('Yes'),
           ),
@@ -336,7 +328,6 @@ class _HomepageState extends State<Homepage> {
     );
   }
 }
-
 
 class TaskCard extends StatelessWidget {
   final String day;

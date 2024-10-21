@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stayez/color.dart';
 import '../database/allDatabase.dart';
+
 class Register extends StatefulWidget {
   const Register({super.key});
 
@@ -24,7 +25,6 @@ class RegisterState extends State<Register> {
       });
     }
   }
-
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
@@ -55,9 +55,12 @@ class RegisterState extends State<Register> {
         appBar: AppBar(
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35),
-                child: Text("Register Detail",style: TextStyle(fontWeight: FontWeight.bold),),
-              )),
+            padding: const EdgeInsets.only(right: 35),
+            child: Text(
+              "Register Detail",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
           backgroundColor: accentColor,
         ),
         body: Padding(

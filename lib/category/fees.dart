@@ -5,7 +5,8 @@ import 'package:stayez/color.dart'; // To retrieve the image
 
 class StudentDisplayPhotoPage extends StatefulWidget {
   @override
-  _StudentDisplayPhotoPageState createState() => _StudentDisplayPhotoPageState();
+  _StudentDisplayPhotoPageState createState() =>
+      _StudentDisplayPhotoPageState();
 }
 
 class _StudentDisplayPhotoPageState extends State<StudentDisplayPhotoPage> {
@@ -20,7 +21,8 @@ class _StudentDisplayPhotoPageState extends State<StudentDisplayPhotoPage> {
   // Function to load the saved image
   Future<void> _loadImage() async {
     final directory = await getApplicationDocumentsDirectory();
-    final String path = '${directory.path}/uploaded_image.png'; // Path to the saved image
+    final String path =
+        '${directory.path}/uploaded_image.png'; // Path to the saved image
     final imageFile = File(path);
 
     if (await imageFile.exists()) {
@@ -42,7 +44,10 @@ class _StudentDisplayPhotoPageState extends State<StudentDisplayPhotoPage> {
           title: Padding(
             padding: const EdgeInsets.only(right: 35.0),
             child: Center(
-                child: Text('Fees Page',style: TextStyle(fontWeight: FontWeight.bold),)),
+                child: Text(
+              'Fees Page',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
           ),
         ),
         body: Center(

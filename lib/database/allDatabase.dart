@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
   // Singleton pattern
- static final DatabaseHelper instance = DatabaseHelper._internal();
+  static final DatabaseHelper instance = DatabaseHelper._internal();
   factory DatabaseHelper() => instance;
   DatabaseHelper._internal();
 
@@ -30,17 +30,17 @@ class DatabaseHelper {
     // Create Users table
     await db.execute(
       'CREATE TABLE Users( '
-          'fullName TEXT,'
-          ' dob TEXT, '
-          'mobileNo TEXT PRIMARY KEY,'
-          ' address TEXT, '
-          'collageName TEXT,'
-          ' currentCourse TEXT, '
-          'yearOfStudy TEXT,'
-          ' parentName TEXT,'
-          ' parentContactNo TEXT, '
-          'roomNo TEXT ,'
-          'password TEXT)',
+      'fullName TEXT,'
+      ' dob TEXT, '
+      'mobileNo TEXT PRIMARY KEY,'
+      ' address TEXT, '
+      'collageName TEXT,'
+      ' currentCourse TEXT, '
+      'yearOfStudy TEXT,'
+      ' parentName TEXT,'
+      ' parentContactNo TEXT, '
+      'roomNo TEXT ,'
+      'password TEXT)',
     );
 
     // Create Register table
@@ -84,14 +84,16 @@ class DatabaseHelper {
 
   Future<Map<String, dynamic>?> getUser(String mobileNo) async {
     final dbClient = await database;
-    var result = await dbClient.query('Users', where: 'mobileNo = ?', whereArgs: [mobileNo]);
+    var result = await dbClient
+        .query('Users', where: 'mobileNo = ?', whereArgs: [mobileNo]);
     return result.isNotEmpty ? result.first : null;
   }
 
-  Future<Map<String, dynamic>?> getUserByPhoneAndPassword(String phone, String password) async {
+  Future<Map<String, dynamic>?> getUserByPhoneAndPassword(
+      String phone, String password) async {
     final dbClient = await database;
-    var result = await dbClient.query('Users', where: 'mobileNo = ? AND password = ?',
-        whereArgs: [phone, password]);
+    var result = await dbClient.query('Users',
+        where: 'mobileNo = ? AND password = ?', whereArgs: [phone, password]);
     return result.isNotEmpty ? result.first : null;
   }
 
@@ -102,12 +104,14 @@ class DatabaseHelper {
 
   Future<void> deleteUser(String mobileNo) async {
     final dbClient = await database;
-    await dbClient.delete('Users', where: 'mobileNo = ?', whereArgs: [mobileNo]);
+    await dbClient
+        .delete('Users', where: 'mobileNo = ?', whereArgs: [mobileNo]);
   }
 
   Future<int> updateUser(String mobileNo, Map<String, dynamic> user) async {
     final dbClient = await database;
-    return await dbClient.update('Users', user, where: 'mobileNo = ?', whereArgs: [mobileNo]);
+    return await dbClient
+        .update('Users', user, where: 'mobileNo = ?', whereArgs: [mobileNo]);
   }
 
   Future<int> getUserRecordCount() async {
@@ -115,27 +119,27 @@ class DatabaseHelper {
     final result = await dbClient.rawQuery('SELECT COUNT(*) FROM Users');
     return Sqflite.firstIntValue(result) ?? 0;
   }
- Future<Map<String, dynamic>> getUserByMobileNo(String mobileNo) async {
-   final dbClient = await database;
-   final result = await dbClient.query(
-     'users',
-     where: 'mobileNo = ?',
-     whereArgs: [mobileNo],
-   );
-   return result.isNotEmpty ? result.first : {};
- }
 
- Future<int> updateUserByMobileNo(String mobileNo,
-     Map<String, dynamic> user) async {
-   final dbClient = await database;
-   return await dbClient!.update(
-     'users',
-     user,
-     where: 'mobileNo = ?',
-     whereArgs: [mobileNo],
-   );
- }
+  Future<Map<String, dynamic>> getUserByMobileNo(String mobileNo) async {
+    final dbClient = await database;
+    final result = await dbClient.query(
+      'users',
+      where: 'mobileNo = ?',
+      whereArgs: [mobileNo],
+    );
+    return result.isNotEmpty ? result.first : {};
+  }
 
+  Future<int> updateUserByMobileNo(
+      String mobileNo, Map<String, dynamic> user) async {
+    final dbClient = await database;
+    return await dbClient!.update(
+      'users',
+      user,
+      where: 'mobileNo = ?',
+      whereArgs: [mobileNo],
+    );
+  }
 
   // ------------------ Methods for Register Table -------------------
 
@@ -158,12 +162,11 @@ class DatabaseHelper {
     );
   }
 
-
-
   Future<int> getRegisterRecordCount(String date) async {
     final dbClient = await database;
     final result = await dbClient.rawQuery(
-        'SELECT COUNT(*) FROM register WHERE entry_date_time LIKE ?', ['$date%']);
+        'SELECT COUNT(*) FROM register WHERE entry_date_time LIKE ?',
+        ['$date%']);
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
@@ -181,7 +184,8 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> getComplaintsByRoom(String roomNo) async {
     final dbClient = await database;
-    return await dbClient.query('complaints', where: 'room_no = ?', whereArgs: [roomNo]);
+    return await dbClient
+        .query('complaints', where: 'room_no = ?', whereArgs: [roomNo]);
   }
 
   Future<void> deleteComplaint(int id) async {
@@ -189,33 +193,30 @@ class DatabaseHelper {
     await dbClient.delete('complaints', where: 'id = ?', whereArgs: [id]);
   }
 
-
   // ------------------------- Method for Daily Update ------------------------
 
- Future<List<Map<String, dynamic>>> getData() async {
-   final db = await database;
-   return await db.query('data');
- }
+  Future<List<Map<String, dynamic>>> getData() async {
+    final db = await database;
+    return await db.query('data');
+  }
 
- Future<void> insertData(String instruction, String? imagePath, String? documentPath) async {
-   final db = await database;
-   await db.insert('data', {
-     'instruction': instruction,
-     'imagePath': imagePath,
-     'documentPath': documentPath,
-   });
- }
+  Future<void> insertData(
+      String instruction, String? imagePath, String? documentPath) async {
+    final db = await database;
+    await db.insert('data', {
+      'instruction': instruction,
+      'imagePath': imagePath,
+      'documentPath': documentPath,
+    });
+  }
 
- Future<void> deleteData(int id) async {
-   final db = await database;
-   await db.delete('data', where: 'id = ?', whereArgs: [id]);
- }
+  Future<void> deleteData(int id) async {
+    final db = await database;
+    await db.delete('data', where: 'id = ?', whereArgs: [id]);
+  }
 
- Future<List<Map<String, dynamic>>> loadData() async {
-   final db = await database;
-   return await db.query('data');
- }
-
- 
+  Future<List<Map<String, dynamic>>> loadData() async {
+    final db = await database;
+    return await db.query('data');
+  }
 }
-

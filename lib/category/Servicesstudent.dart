@@ -20,7 +20,9 @@ class _servicespro extends State<servicespro> {
     if (serviceProviderJson != null) {
       final List<dynamic> decoded = jsonDecode(serviceProviderJson);
       setState(() {
-        serviceProviders = decoded.map((service) => ServiceProvider.fromJson(service)).toList();
+        serviceProviders = decoded
+            .map((service) => ServiceProvider.fromJson(service))
+            .toList();
       });
     }
   }
@@ -49,12 +51,12 @@ class _servicespro extends State<servicespro> {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35.0),
-                child: Text(
-                  "Service Providers",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: const EdgeInsets.only(right: 35.0),
+            child: Text(
+              "Service Providers",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
         ),
         body: ListView.builder(
           itemCount: serviceProviders.length,
@@ -69,8 +71,15 @@ class _servicespro extends State<servicespro> {
                   color: accentColor,
                   child: ListTile(
                     title: Text("Name: ${service.name}"),
-                    subtitle: Text("Role: ${service.role}\nPhone: ${service.phone}",style: TextStyle(color: black,fontSize: 20,fontWeight: FontWeight.bold),),
-                    onTap: () => _launchPhone(service.phone), // Make phone number clickable
+                    subtitle: Text(
+                      "Role: ${service.role}\nPhone: ${service.phone}",
+                      style: TextStyle(
+                          color: black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onTap: () => _launchPhone(
+                        service.phone), // Make phone number clickable
                   ),
                 ),
               ),

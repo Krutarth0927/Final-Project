@@ -9,6 +9,7 @@ class DailyRegisterForm extends StatefulWidget {
   @override
   _DailyRegisterFormState createState() => _DailyRegisterFormState();
 }
+
 class _DailyRegisterFormState extends State<DailyRegisterForm> {
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
@@ -44,12 +45,12 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
         appBar: AppBar(
           title: const Center(
               child: Padding(
-                padding: EdgeInsets.only(right: 35),
-                child: Text(
-                  "Daily Register",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: EdgeInsets.only(right: 35),
+            child: Text(
+              "Daily Register",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
           backgroundColor: accentColor,
         ),
         body: Padding(
@@ -108,6 +109,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                     controller: exitTimeController,
                     labelText: "Exit Time",
                     icon: Icons.exit_to_app,
+
                   ),
                   SizedBox(height: 20),
 
@@ -116,7 +118,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                     controller: reasonController,
                     labelText: "Reason",
                     icon: Icons.text_snippet,
-                    readOnly: false,  // Make this field read-only
+                    readOnly: false, // Make this field read-only
                   ),
 
                   SizedBox(height: 30),
@@ -129,9 +131,9 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                             'name': nameController.text,
                             'room_no': roomNoController.text,
                             'entry_date_time':
-                            '$currentDate ${entryTimeController.text}',
+                                '$currentDate ${entryTimeController.text}',
                             'exit_date_time':
-                            '$currentDate ${exitTimeController.text}',
+                                '$currentDate ${exitTimeController.text}',
                             'reason': reasonController.text,
                           }).then((value) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -227,6 +229,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
     required TextEditingController controller,
     required String labelText,
     required IconData icon,
+    bool isExitTime = false,
   }) {
     return TextFormField(
       controller: controller,
@@ -257,11 +260,43 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
         if (value == null || value.isEmpty) {
           return 'Please enter $labelText';
         }
+
+        // Exit Time Validation: Ensure Exit Time is not before Entry Time
+        if (isExitTime) {
+          TimeOfDay entryTime = TimeOfDay.now(); // Default current time
+          if (entryTimeController.text.isNotEmpty) {
+            // Parse the entry time if it exists
+            entryTime = _parseTime(entryTimeController.text);
+          }
+
+          TimeOfDay exitTime = _parseTime(controller.text);
+
+          // Compare Entry Time and Exit Time
+          if (_isTimeBefore(exitTime, entryTime)) {
+            return 'Exit time must be after entry time';
+          }
+        }
+
         return null;
       },
     );
   }
 
+// Helper function to parse time string (HH:mm) to TimeOfDay
+  TimeOfDay _parseTime(String time) {
+    final format = DateFormat.jm(); // HH:mm
+    DateTime dateTime = format.parse(time);
+    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+  }
+
+// Helper function to compare two TimeOfDay objects
+  bool _isTimeBefore(TimeOfDay time1, TimeOfDay time2) {
+    final now = DateTime.now();
+    final dateTime1 = DateTime(now.year, now.month, now.day, time1.hour, time1.minute);
+    final dateTime2 = DateTime(now.year, now.month, now.day, time2.hour, time2.minute);
+
+    return dateTime1.isBefore(dateTime2);
+  }
   // Widget for the Date field
   Widget _buildDateField({
     required String labelText,

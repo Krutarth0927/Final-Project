@@ -5,19 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 class EmergencyBellPage extends StatelessWidget {
   const EmergencyBellPage({Key? key}) : super(key: key);
 
-  // Function to open the SMS app with the emergency message
-  // void sendEmergencyMessage() async {
-  //   const phoneNumber = '+919484776059'; // Replace with the warden/security number
-  //   const emergencyMessage = 'Emergency alert from hostel app. Please respond immediately!';
-  //   final smsUrl = 'sms:$phoneNumber?body=$emergencyMessage';
-  //
-  //   if (await canLaunch(smsUrl)) {
-  //     await launch(smsUrl);
-  //   } else {
-  //     throw 'Could not launch $smsUrl';
-  //   }
-  // }
-
   // Function to open the dial pad with the given phone number
   void _makePhoneCall(String phoneNumber) async {
     final phoneUrl = 'tel:$phoneNumber';
@@ -52,7 +39,11 @@ class EmergencyBellPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Emergency Bell Icon Button
-              Icon(Icons.notifications,color:redaccent,size: 150,),
+              Icon(
+                Icons.notifications,
+                color: redaccent,
+                size: 150,
+              ),
               SizedBox(height: 20),
 
               // Label and description
@@ -74,13 +65,13 @@ class EmergencyBellPage extends StatelessWidget {
                       children: [
                         Text('Warden:', style: TextStyle(fontSize: 20)),
                         GestureDetector(
-                          onTap: () => _makePhoneCall('+919484776059'), // Warden's number
+                          onTap: () => _makePhoneCall(
+                              '+919484776059'), // Warden's number
                           child: Text(
                             'Phone: +91 9484776059',
                             style: TextStyle(
                               fontSize: 24,
                               color: Blue,
-
                             ),
                           ),
                         ),
@@ -102,13 +93,13 @@ class EmergencyBellPage extends StatelessWidget {
                       children: [
                         Text('Security:', style: TextStyle(fontSize: 20)),
                         GestureDetector(
-                          onTap: () => _makePhoneCall('+919876543210'), // Security's number
+                          onTap: () => _makePhoneCall(
+                              '+919484776059'), // Security's number
                           child: Text(
-                            'Phone: +91 9876543210',
+                            'Phone: +91 9484776059',
                             style: TextStyle(
                               fontSize: 24,
                               color: Blue,
-
                             ),
                           ),
                         ),

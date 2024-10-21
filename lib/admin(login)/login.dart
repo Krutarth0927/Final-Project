@@ -40,6 +40,7 @@ class _LoginState extends State<Login> {
       );
     }
   }
+
   login() async {
     if (username.text == correctUsername && password.text == correctPassword) {
       if (!mounted) return;
@@ -48,9 +49,8 @@ class _LoginState extends State<Login> {
       prefs1.setBool('isLoggedIn', true);
       prefs1.setBool('isAdmin', true);
 
-
       Navigator.push(
-         context, MaterialPageRoute(builder: (context) => AdiminDash()));
+          context, MaterialPageRoute(builder: (context) => AdiminDash()));
     } else {
       // If credentials are incorrect, set state to show error message
       setState(() {
@@ -77,7 +77,7 @@ class _LoginState extends State<Login> {
                     decoration: BoxDecoration(
                       color: accentColor,
                       borderRadius:
-                      BorderRadius.vertical(bottom: Radius.circular(50)),
+                          BorderRadius.vertical(bottom: Radius.circular(50)),
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
                     margin: EdgeInsets.symmetric(horizontal: 20),
@@ -182,9 +182,9 @@ class _LoginState extends State<Login> {
                         SizedBox(height: 20),
                         isLoginTrue
                             ? const Text(
-                          "Username or password is incorrect",
-                          style: TextStyle(color:accentColor),
-                        )
+                                "Username or password is incorrect",
+                                style: TextStyle(color: accentColor),
+                              )
                             : SizedBox(),
                       ],
                     ),

@@ -19,6 +19,7 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
   ];
 
   final TextEditingController roomNoController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -32,9 +33,9 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
       roomNoController.text = savedData ?? 'no data';
     });
   }
+
   String? _selectedComplaint;
   String? _complaintDetails;
-  // String? _roomNo; // Room number variable
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +45,14 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
         appBar: AppBar(
           backgroundColor: accentColor,
           title: Center(
-              child: Padding(
-            padding: const EdgeInsets.only(right: 35.0),
-            child: Text(
-              'Complaint Box',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 35.0),
+              child: Text(
+                'Complaint Box',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-          )),
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -166,8 +168,8 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
                   Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 15),
                         backgroundColor: buttonColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -187,6 +189,16 @@ class _ComplaintBoxScreenState extends State<ComplaintBoxScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Complaint Submitted')),
                           );
+
+                          // Clear the fields after submission
+                          setState(() {
+                            roomNoController.clear();
+                            _selectedComplaint = null;
+                            _complaintDetails = null;
+                          });
+
+                          // Reset the form state
+                          _formKey.currentState!.reset();
                         }
                       },
                       child: Text(

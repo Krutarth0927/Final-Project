@@ -11,12 +11,12 @@ class RegisterTable extends StatelessWidget {
         appBar: AppBar(
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35.0),
-                child: Text(
-                  "Register Entries",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: const EdgeInsets.only(right: 35.0),
+            child: Text(
+              "Register Entries",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
           backgroundColor: accentColor,
         ),
         body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -128,15 +128,14 @@ class RegisterTable extends StatelessWidget {
                               ),
                             ),
                           ],
-                          color: MaterialStateColor.resolveWith(
-                                  (states) => states.contains(MaterialState.selected)
+                          color: MaterialStateColor.resolveWith((states) =>
+                              states.contains(MaterialState.selected)
                                   ? black
-                                  : trans
-                          ),
+                                  : trans),
                         );
                       }).toList(),
                       headingRowColor: MaterialStateColor.resolveWith(
-                            (states) => accentColor,
+                        (states) => accentColor,
                       ),
                       dataRowHeight: 60,
                       headingRowHeight: 70,

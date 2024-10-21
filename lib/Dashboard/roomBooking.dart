@@ -42,12 +42,12 @@ class _StudentPageState extends State<StudentPage> {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35.0),
-                child: Text(
-                  "Student Room View",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: const EdgeInsets.only(right: 35.0),
+            child: Text(
+              "Student Room View",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
         ),
         body: ListView.builder(
           itemCount: rooms.length,
@@ -63,7 +63,7 @@ class _StudentPageState extends State<StudentPage> {
                   child: ListTile(
                     title: Text("Room ${room.number} - Beds: ${room.beds}"),
                     subtitle:
-                    Text(room.isAvailable ? "Available" : "Not Available"),
+                        Text(room.isAvailable ? "Available" : "Not Available"),
                   ),
                 ),
               ),

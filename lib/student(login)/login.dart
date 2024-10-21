@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stayez/color.dart';
@@ -13,6 +11,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  bool _isPasswordVisible = false;
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -43,14 +43,15 @@ class _LoginPageState extends State<LoginPage> {
       String phone = phoneController.text;
       String password = passwordController.text;
       DatabaseHelper db = DatabaseHelper();
-      Map<String, dynamic>? user = await db.getUserByPhoneAndPassword(
-          phone, password);
+      Map<String, dynamic>? user =
+          await db.getUserByPhoneAndPassword(phone, password);
       print(user);
       if (user != null) {
         SharedPreferences prefs1 = await SharedPreferences.getInstance();
         prefs1.setBool('isLoggedIn', true);
         prefs1.setBool('isAdmin', false);
-        prefs1.setString('userId', user['mobileNo'].toString()); // Store userId as a String
+        prefs1.setString(
+            'userId', user['mobileNo'].toString()); // Store userId as a String
         prefs1.setString('fullName', user['fullName']).toString();
         prefs1.setString('roomNo', user['roomNo']).toString();
         // Navigate to the HomePage
@@ -122,11 +123,12 @@ class _LoginPageState extends State<LoginPage> {
                             labelText: 'Phone Number',
                             prefixIcon: Icon(Icons.phone),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                  10), // Rounded shape
+                              borderRadius:
+                                  BorderRadius.circular(10), // Rounded shape
                             ),
                           ),
                           keyboardType: TextInputType.phone,
+                          maxLength: 10,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your phone number';
@@ -140,12 +142,22 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: InputDecoration(
                             labelText: 'Password',
                             prefixIcon: Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible; // Toggle visibility
+                                });
+                              },
+                            ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                  10), // Rounded shape
+                              borderRadius: BorderRadius.circular(10), // Rounded shape
                             ),
                           ),
-                          obscureText: true,
+                          obscureText: !_isPasswordVisible,
+                          maxLength: 8,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your password';

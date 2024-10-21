@@ -80,7 +80,8 @@ class _CategoryState extends State<Category> {
         'page': Update(),
       },
       {
-        'icon': const Icon(Icons.miscellaneous_services, size: 40, color: Colors.black),
+        'icon': const Icon(Icons.miscellaneous_services,
+            size: 40, color: Colors.black),
         'label': 'Services',
         'page': servicespro() // Restricted by login
       },
@@ -137,7 +138,8 @@ class _CategoryState extends State<Category> {
                     crossAxisCount: 3, // Three items per row
                     crossAxisSpacing: 10.0,
                     mainAxisSpacing: 10.0,
-                    childAspectRatio: 0.80, // Decreased aspect ratio to make cards taller
+                    childAspectRatio:
+                        0.80, // Decreased aspect ratio to make cards taller
                   ),
                   itemBuilder: (context, index) {
                     final item = items[index];
@@ -200,6 +202,7 @@ Future<void> _logout(BuildContext context) async {
 
   Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) => SplashScreen()), // Navigate to SplashScreen
+    MaterialPageRoute(
+        builder: (context) => SplashScreen()), // Navigate to SplashScreen
   );
 }

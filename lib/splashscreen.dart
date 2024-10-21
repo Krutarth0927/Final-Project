@@ -6,13 +6,13 @@ import 'package:stayez/color.dart';
 import 'package:stayez/customnavigation.dart';
 import 'package:stayez/student(login)/login.dart';
 
-
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
   bool _isVisible = false;
 
   late SharedPreferences prefs;
@@ -22,19 +22,18 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     if (isLoggedIn) {
       // If the user is already logged in, navigate to the HomePage
-      bool isAdmin=prefs.getBool('isAdmin')??false;
-      if(isAdmin){
+      bool isAdmin = prefs.getBool('isAdmin') ?? false;
+      if (isAdmin) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => AdiminDash()),
         );
-      }else{
+      } else {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => NavigationMenu()),
         );
       }
-
     }
   }
 
@@ -97,7 +96,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
             // Buttons (Slide from bottom)
             AnimatedPositioned(
-              bottom: _isVisible ? screenHeight * 0.20 : -100, // Slide from bottom
+              bottom:
+                  _isVisible ? screenHeight * 0.20 : -100, // Slide from bottom
               left: 0,
               right: 0,
               duration: Duration(milliseconds: 1000),
@@ -107,35 +107,39 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> Login()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Login()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: buttonColor, // Button color
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
                     child: Text(
                       "Admin Login",
-                      style: TextStyle(fontSize: 26,color: black),
+                      style: TextStyle(fontSize: 26, color: black),
                     ),
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: lightBlue, // Button color
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
                     child: Text(
                       "Student Login",
-                      style: TextStyle(fontSize: 20,color: black),
+                      style: TextStyle(fontSize: 20, color: black),
                     ),
                   ),
                 ],

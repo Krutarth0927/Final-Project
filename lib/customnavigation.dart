@@ -5,7 +5,7 @@ import 'package:stayez/color.dart';
 import 'package:stayez/student(login)/profilepage.dart';
 
 class NavigationMenu extends StatefulWidget {
-  const NavigationMenu({super.key, required});
+  const NavigationMenu({super.key,});
 
   @override
   State<NavigationMenu> createState() => _NavigationMenuState();

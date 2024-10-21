@@ -24,12 +24,14 @@ class RegistrationForm extends StatefulWidget {
 
 class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
-
+  bool _isPasswordVisible = false;
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
   final TextEditingController roomNoController = TextEditingController();
+  final TextEditingController parentsocntact = TextEditingController();
+  final TextEditingController parentsname = TextEditingController();
   DateTime? dob;
   String? address;
   String? collageName;
@@ -38,9 +40,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String? category;
   String? currentCourse;
   String? yearOfStudy;
-  String? parentName;
+
   // String? roomNo;
-  String? parentContactNo;
 
   final List<String> categories = ['General', 'OBC', 'SC', 'ST'];
   final List<String> courses = ['B.Sc', 'B.Tech', 'M.Sc', 'M.Tech'];
@@ -49,13 +50,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
   @override
   void dispose() {
     super.dispose();
+
   }
-  // Future<void> _saveStudentName(String fullName) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString('fullName', fullName);
-  //   await prefs.setString('roomNo', roomNoController.text);
-  // //
-  // }
+
   void _saveData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('roomNo', roomNoController.text);
@@ -66,16 +63,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 
-
-
   void _saveForm() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  // //  await prefs.setString('fullName', fullNameController.text); // Save first text box data
-  // //   await prefs.setString('roomNO', roomNoController.text);
-  // //     String fullName = fullNameController.text;
-  //     _saveStudentName(fullNameController.text);
-     // Navigator.pop(context); // Return to the homepage or navigate accordingly
-
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -87,8 +75,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
         'collageName': collageName,
         'currentCourse': currentCourse,
         'yearOfStudy': yearOfStudy,
-        'parentName': parentName,
-        'parentContactNo': parentContactNo,
+        'parentName': parentsname.text,
+        'parentContactNo': parentsocntact.text,
         'password': passwordController.text,
         'roomNo': roomNoController.text,
       };
@@ -135,9 +123,18 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
                   ),
+                  maxLength: 20, // Set the maximum number of characters to 20
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your full name';
+                    }
+                    // Check if the input contains more than 20 characters
+                    if (value.length > 20 || value.length < 3) {
+                      return 'Please enter no more than 20 characters and not \n less than 3';
+                    }
+                    // Check if the input contains only alphabetic characters (no spaces)
+                    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                      return 'Please enter only alphabetical characters';
                     }
                     return null;
                   },
@@ -156,7 +153,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       setState(() {
                         dob = picked;
                         dateController.text =
-                        '${dob!.day}/${dob!.month}/${dob!.year}';
+                            '${dob!.day}/${dob!.month}/${dob!.year}';
                       });
                     }
                   },
@@ -182,9 +179,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.phone,
+                  maxLength: 10, // Ensure only 10 digits can be entered
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your Mobile no';
+                    }
+                    // Check if the input is exactly 10 digits and contains only numeric characters
+                    if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                      return 'Please enter a valid 10-digit mobile number';
                     }
                     return null;
                   },
@@ -193,16 +195,20 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 TextFormField(
                   controller: roomNoController,
                   decoration: InputDecoration(
-                    labelText: 'Room NO',
+                    labelText: 'Room No',
                     prefixIcon: Icon(Icons.room),
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: TextInputType.number,
-
+                  keyboardType:
+                      TextInputType.number, // Allows only numeric input
+                  maxLength: 3, // Limit the input to 3 characters
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-
                       return 'Please enter your Room number';
+                    }
+                    // Check if the input contains exactly 3 digits and no special characters
+                    if (!RegExp(r'^[0-9]{3}$').hasMatch(value)) {
+                      return 'Please enter a valid 3-digit room number';
                     }
                     return null;
                   },
@@ -241,40 +247,37 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     return null;
                   },
                 ),
-
                 SizedBox(height: 10),
-
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          labelText: 'Current Course',
-                          border: OutlineInputBorder(),
-                     //     icon: Icon(Icons.school), // Add your desired icon here
-                        ),
-                        items: courses.map((String course) {
-                          return DropdownMenuItem<String>(
-                            value: course,
-                            child: Text(course),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          setState(() {
-                            currentCourse = newValue;
-                          });
-                        },
-                        onSaved: (value) {
-                          currentCourse = value;
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Please select your current course';
-                          }
-                          return null;
-                        },
-                      ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Current Course',
+                      border: OutlineInputBorder(),
+                      //     icon: Icon(Icons.school), // Add your desired icon here
                     ),
-
+                    items: courses.map((String course) {
+                      return DropdownMenuItem<String>(
+                        value: course,
+                        child: Text(course),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        currentCourse = newValue;
+                      });
+                    },
+                    onSaved: (value) {
+                      currentCourse = value;
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select your current course';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
                 SizedBox(height: 10),
                 TextFormField(
                   decoration: InputDecoration(
@@ -282,7 +285,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     prefixIcon: Icon(Icons.timeline),
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.number, // Allows numeric input
                   onSaved: (value) {
                     yearOfStudy = value;
                   },
@@ -290,67 +293,97 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your year of study';
                     }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Parent's Name",
-                    prefixIcon: Icon(Icons.person_outline),
-                    border: OutlineInputBorder(),
-                  ),
-                  onSaved: (value) {
-                    parentName = value;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your parent\'s name';
+                    // Check if the input contains only numbers and the '-' symbol
+                    if (!RegExp(r'^[0-9-]+$').hasMatch(value)) {
+                      return 'Please enter a valid year using only numbers and "-" symbol';
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: 10),
                 TextFormField(
+                  controller: parentsname,
+                  decoration: InputDecoration(
+                    labelText: "Parent's Name",
+                    prefixIcon: Icon(Icons.person_outline),
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLength: 20,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your parent\'s name';
+                    }
+                    if (value.length > 20 || value.length < 3) {
+                      return 'Please enter no more than 20 characters and not less \n than 3';
+                    }
+                    // Check if the input contains only alphabetic characters (no spaces)
+                    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                      return 'Please enter only alphabetical characters';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  controller: parentsocntact,
                   decoration: InputDecoration(
                     labelText: "Parent's Contact Number",
                     prefixIcon: Icon(Icons.phone),
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.phone,
-                  onSaved: (value) {
-                    parentContactNo = value;
-                  },
+                  maxLength: 10,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your parent\'s contact number';
+                    }
+                    if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                      return 'Please enter a valid 10-digit mobile number';
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
-                  ),
-                  obscureText: true,
-                  onSaved: (value) {
-                    // Password is saved directly
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
-                    }
-                    return null;
-                  },
-                ),
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      prefixIcon: Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible =
+                                !_isPasswordVisible; // Toggle visibility
+                          });
+                        },
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                    obscureText:
+                        !_isPasswordVisible, // Hides the password input
+                    onSaved: (value) {
+                      // Password is saved directly
+                    },
+                    maxLength: 8,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a password';
+                      }
+                      // Check if the input is exactly 8 characters long and contains only alphabetical characters
+                      return null;
+                    }),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _saveForm,
-                  child: Text('Register',style: TextStyle(color: black),),
+                  child: Text(
+                    'Register',
+                    style: TextStyle(color: black),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: buttonColor,
                   ),
