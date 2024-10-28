@@ -73,6 +73,14 @@ class DatabaseHelper {
           documentPath TEXT
         )
       ''');
+
+     await db.execute('''
+      CREATE TABLE image_uploads (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        file_path TEXT NOT NULL,
+        upload_date TEXT NOT NULL
+      )
+    ''');
   }
 
   // ------------------ Methods for Users Table -------------------
