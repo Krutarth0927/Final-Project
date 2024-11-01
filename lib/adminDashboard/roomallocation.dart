@@ -224,6 +224,19 @@ class AddRoomPage extends StatelessWidget {
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _bedsController = TextEditingController();
 
+  void showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
+
+  @override
+  void dispose() {
+    _numberController.dispose();
+    _bedsController.dispose();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -233,12 +246,12 @@ class AddRoomPage extends StatelessWidget {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-            padding: const EdgeInsets.only(right: 35),
-            child: Text(
-              "Add Room",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          )),
+                padding: const EdgeInsets.only(right: 35),
+                child: Text(
+                  "Add Room",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              )),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -258,10 +271,19 @@ class AddRoomPage extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
+                  if (_numberController.text.isEmpty) {
+                    showError(context, "Room number is required");
+                    return;
+                  }
+
+                  if (int.tryParse(_bedsController.text) == null ||
+                      int.parse(_bedsController.text) <= 0) {
+                    showError(context, "Beds must be a positive integer");
+                    return;
+                  }
+
                   final room = Room(
-                    id: rooms.isNotEmpty
-                        ? rooms.last.id + 1
-                        : 1, // Increment the ID based on existing rooms
+                    id: rooms.isNotEmpty ? rooms.last.id + 1 : 1,
                     number: _numberController.text,
                     isAvailable: true,
                     beds: int.parse(_bedsController.text),
@@ -269,13 +291,8 @@ class AddRoomPage extends StatelessWidget {
                   onRoomAdded(room);
                   Navigator.of(context).pop();
                 },
-                child: Text(
-                  "Add Room",
-                  style: TextStyle(color: black),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: buttonColor,
-                ),
+                child: Text("Add Room", style: TextStyle(color: black)),
+                style: ElevatedButton.styleFrom(backgroundColor: buttonColor),
               ),
             ],
           ),
@@ -284,7 +301,6 @@ class AddRoomPage extends StatelessWidget {
     );
   }
 }
-
 class EditRoomPage extends StatelessWidget {
   final Room room;
   final Function(int, String, int) onRoomUpdated;
@@ -293,6 +309,13 @@ class EditRoomPage extends StatelessWidget {
 
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _bedsController = TextEditingController();
+
+  @override
+  void dispose() {
+    _numberController.dispose();
+    _bedsController.dispose();
+
+      }
 
   @override
   Widget build(BuildContext context) {
