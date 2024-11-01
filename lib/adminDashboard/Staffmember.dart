@@ -44,17 +44,16 @@ class _AdminStaffMemberPageState extends State<AdminStaffMemberPage> {
       _saveStaffMembers();
     });
   }
-
-  void updateStaffMember(
-      int staffId, String newName, String newRole, String newPhone) {
+  void updateStaffMember(StaffMember updatedStaff) {
     setState(() {
-      final staff = staffMembers.firstWhere((s) => s.id == staffId);
-      staff.name = newName;
-      staff.role = newRole;
-      staff.phone = newPhone;
+      final staff = staffMembers.firstWhere((s) => s.id == updatedStaff.id);
+      staff.name = updatedStaff.name;
+      staff.role = updatedStaff.role;
+      staff.phone = updatedStaff.phone;
       _saveStaffMembers();
     });
   }
+
 
   void deleteStaffMember(int staffId) {
     setState(() {
@@ -186,98 +185,25 @@ class StaffMember {
     };
   }
 }
-
-class AddStaffPage extends StatelessWidget {
+class AddStaffPage extends StatefulWidget {
   final Function(StaffMember) onStaffAdded;
   final List<StaffMember> staffMembers;
 
   AddStaffPage({required this.onStaffAdded, required this.staffMembers});
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _roleController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: AppBar(
-          backgroundColor: accentColor,
-          title: Center(
-              child: Padding(
-            padding: const EdgeInsets.only(right: 35),
-            child: Text(
-              "Add Staff Member",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          )),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: "Name"),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _roleController,
-                decoration: InputDecoration(labelText: "Role"),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: "Phone Number"),
-                keyboardType: TextInputType.phone,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  final staff = StaffMember(
-                    id: staffMembers.isNotEmpty
-                        ? staffMembers.last.id + 1
-                        : 1, // Increment the ID based on existing staff members
-                    name: _nameController.text,
-                    role: _roleController.text,
-                    phone: _phoneController.text,
-                  );
-                  onStaffAdded(staff);
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  "Add Staff",
-                  style: TextStyle(color: black),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: buttonColor,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  _AddStaffPageState createState() => _AddStaffPageState();
 }
 
-class EditStaffPage extends StatelessWidget {
-  final StaffMember staff;
-  final Function(int, String, String, String) onStaffUpdated;
-
-  EditStaffPage({required this.staff, required this.onStaffUpdated});
-
+class _AddStaffPageState extends State<AddStaffPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _roleController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>(); // Add form key for validation
+
   @override
   Widget build(BuildContext context) {
-    _nameController.text = staff.name;
-    _roleController.text = staff.role;
-    _phoneController.text = staff.phone;
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: backgroundColor,
@@ -287,7 +213,7 @@ class EditStaffPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(right: 35),
               child: Text(
-                "Edit Staff Member",
+                "Add Staff Member",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -295,36 +221,189 @@ class EditStaffPage extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: "Name"),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _roleController,
-                decoration: InputDecoration(labelText: "Role"),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: "Phone Number"),
-                keyboardType: TextInputType.phone,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  onStaffUpdated(staff.id, _nameController.text,
-                      _roleController.text, _phoneController.text);
-                  Navigator.of(context).pop();
-                },
-                child: Text("Update Staff", style: TextStyle(color: black)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: buttonColor,
+          child: Form(
+            key: _formKey, // Use form key to handle validation
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: "Name"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Name is required";
+                    } else if (value.length < 2) {
+                      return "Name must be at least 2 characters";
+                    } else if (RegExp(r'[0-9]').hasMatch(value)) {
+                      return "Name cannot contain numbers";
+                    }
+                    return null;
+                  },
                 ),
-              ),
-            ],
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _roleController,
+                  decoration: InputDecoration(labelText: "Role"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Role is required";
+                    } else if (value.length < 2) {
+                      return "Role must be at least 2 characters";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _phoneController,
+                  decoration: InputDecoration(labelText: "Phone Number"),
+                  keyboardType: TextInputType.phone,
+                  maxLength: 10,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Phone number is required";
+                    } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                      return "Phone number must be exactly 10 digits";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      final staff = StaffMember(
+                        id: widget.staffMembers.isNotEmpty
+                            ? widget.staffMembers.last.id + 1
+                            : 1,
+                        name: _nameController.text,
+                        role: _roleController.text,
+                        phone: _phoneController.text,
+                      );
+                      widget.onStaffAdded(staff);
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: Text(
+                    "Add Staff",
+                    style: TextStyle(color: black),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: buttonColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+class EditStaffPage extends StatefulWidget {
+  final StaffMember staff;
+  final Function(StaffMember) onStaffUpdated; // Expecting StaffMember
+
+  EditStaffPage({required this.staff, required this.onStaffUpdated});
+
+  @override
+  _EditStaffPageState createState() => _EditStaffPageState();
+}
+
+class _EditStaffPageState extends State<EditStaffPage> {
+  late TextEditingController _nameController;
+  late TextEditingController _roleController;
+  late TextEditingController _phoneController;
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.staff.name);
+    _roleController = TextEditingController(text: widget.staff.role);
+    _phoneController = TextEditingController(text: widget.staff.phone);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          title: Text("Edit Staff Member"),
+          backgroundColor: accentColor,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: "Name"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Name is required";
+                    } else if (value.length < 2) {
+                      return "Name must be at least 2 characters";
+                    } else if (RegExp(r'[0-9]').hasMatch(value)) {
+                      return "Name cannot contain numbers";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _roleController,
+                  decoration: InputDecoration(labelText: "Role"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Role is required";
+                    } else if (value.length < 2) {
+                      return "Role must be at least 2 characters";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _phoneController,
+                  decoration: InputDecoration(labelText: "Phone Number"),
+                  keyboardType: TextInputType.phone,
+                  maxLength: 10,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Phone number is required";
+                    } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                      return "Phone number must be exactly 10 digits";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      // Create updated StaffMember object
+                      final updatedStaff = StaffMember(
+                        id: widget.staff.id,
+                        name: _nameController.text,
+                        role: _roleController.text,
+                        phone: _phoneController.text,
+                      );
+                      widget.onStaffUpdated(updatedStaff); // Pass updated object
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: buttonColor
+                  ),
+                  child: Text("Update Staff",style: TextStyle(color: black),),
+                ),
+              ],
+            ),
           ),
         ),
       ),
