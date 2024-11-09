@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import for formatting dates and times.
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../database/allDatabase.dart';
 import 'package:stayez/color.dart';
@@ -17,6 +17,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
   final entryTimeController = TextEditingController();
   final exitTimeController = TextEditingController();
   final reasonController = TextEditingController();
+  bool isExitTimeEnabled = false; // New variable to control exit time field
 
   // Get the current date.
   final String currentDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -45,12 +46,12 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
         appBar: AppBar(
           title: const Center(
               child: Padding(
-            padding: EdgeInsets.only(right: 35),
-            child: Text(
-              "Daily Register",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          )),
+                padding: EdgeInsets.only(right: 35),
+                child: Text(
+                  "Daily Register",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              )),
           backgroundColor: accentColor,
         ),
         body: Padding(
@@ -71,7 +72,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                   ),
                   SizedBox(height: 20),
 
-                  // Name field (Editable)
+                  // Name field
                   _buildTextFormField(
                     controller: nameController,
                     labelText: "Name",
@@ -79,7 +80,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                   ),
                   SizedBox(height: 20),
 
-                  // Room No field (Editable)
+                  // Room No field
                   _buildTextFormField(
                     controller: roomNoController,
                     labelText: "Room No",
@@ -88,37 +89,44 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                   ),
                   SizedBox(height: 20),
 
-                  // Date field (Read-only)
+                  // Date field
                   _buildDateField(
                     labelText: "Date",
                     icon: Icons.calendar_today,
-                    date: currentDate, // Display current date
+                    date: currentDate,
                   ),
                   SizedBox(height: 20),
 
-                  // Entry Time field (Read-only with picker)
+                  // Entry Time field
                   _buildTimeField(
                     controller: entryTimeController,
                     labelText: "Entry Time",
                     icon: Icons.access_time,
+                    onTimePicked: (TimeOfDay pickedTime) {
+                      setState(() {
+                        isExitTimeEnabled = true;
+                        entryTimeController.text = pickedTime.format(context);
+                      });
+                    },
                   ),
                   SizedBox(height: 20),
 
-                  // Exit Time field (Read-only with picker)
+                  // Exit Time field
                   _buildTimeField(
                     controller: exitTimeController,
                     labelText: "Exit Time",
                     icon: Icons.exit_to_app,
-
+                    enabled: isExitTimeEnabled,
+                    isExitTime: true,
                   ),
                   SizedBox(height: 20),
 
-                  // Reason field (Read-only)
+                  // Reason field
                   _buildTextFormField(
                     controller: reasonController,
                     labelText: "Reason",
                     icon: Icons.text_snippet,
-                    readOnly: false, // Make this field read-only
+                    readOnly: false,
                   ),
 
                   SizedBox(height: 30),
@@ -131,9 +139,9 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                             'name': nameController.text,
                             'room_no': roomNoController.text,
                             'entry_date_time':
-                                '$currentDate ${entryTimeController.text}',
+                            '$currentDate ${entryTimeController.text}',
                             'exit_date_time':
-                                '$currentDate ${exitTimeController.text}',
+                            '$currentDate ${exitTimeController.text}',
                             'reason': reasonController.text,
                           }).then((value) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -146,6 +154,9 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                           entryTimeController.clear();
                           exitTimeController.clear();
                           reasonController.clear();
+                          setState(() {
+                            isExitTimeEnabled = false; // Reset exit time field
+                          });
                         }
                       },
                       child: Text("Submit"),
@@ -192,18 +203,17 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
     );
   }
 
-  // Widget to build text form fields
   Widget _buildTextFormField({
     required TextEditingController controller,
     required String labelText,
     required IconData icon,
-    TextInputType keyboardType = TextInputType.text, // Default to text input
-    bool readOnly = true, // Add a readOnly property (default false)
+    TextInputType keyboardType = TextInputType.text,
+    bool readOnly = true,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      readOnly: readOnly, // Set field as read-only if needed
+      readOnly: readOnly,
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: Icon(icon, color: black),
@@ -224,16 +234,18 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
     );
   }
 
-  // Widget for the Time field (already read-only with a picker)
   Widget _buildTimeField({
     required TextEditingController controller,
     required String labelText,
     required IconData icon,
+    bool enabled = true,
     bool isExitTime = false,
+    void Function(TimeOfDay)? onTimePicked,
   }) {
     return TextFormField(
       controller: controller,
-      readOnly: true, // Make the field read-only
+      readOnly: true,
+      enabled: enabled,
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: Icon(icon, color: black),
@@ -245,59 +257,72 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
-      onTap: () async {
+      onTap: enabled
+          ? () async {
         TimeOfDay? pickedTime = await showTimePicker(
           context: context,
           initialTime: TimeOfDay.now(),
         );
         if (pickedTime != null) {
-          setState(() {
+          if (isExitTime && entryTimeController.text.isNotEmpty) {
+            TimeOfDay entryTime = _parseTime(entryTimeController.text);
+            if (_isTimeBefore(pickedTime, entryTime)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Exit time must be after entry time')),
+              );
+            } else if (pickedTime == entryTime) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Exit time cannot be the same as entry time')),
+              );
+            } else {
+              controller.text = pickedTime.format(context);
+            }
+          } else {
             controller.text = pickedTime.format(context);
-          });
+            if (onTimePicked != null) onTimePicked(pickedTime);
+          }
         }
-      },
+      }
+          : null,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter $labelText';
         }
-
-        // Exit Time Validation: Ensure Exit Time is not before Entry Time
-        if (isExitTime) {
-          TimeOfDay entryTime = TimeOfDay.now(); // Default current time
-          if (entryTimeController.text.isNotEmpty) {
-            // Parse the entry time if it exists
-            entryTime = _parseTime(entryTimeController.text);
-          }
-
-          TimeOfDay exitTime = _parseTime(controller.text);
-
-          // Compare Entry Time and Exit Time
-          if (_isTimeBefore(exitTime, entryTime)) {
-            return 'Exit time must be after entry time';
-          }
-        }
-
         return null;
       },
     );
   }
 
-// Helper function to parse time string (HH:mm) to TimeOfDay
   TimeOfDay _parseTime(String time) {
-    final format = DateFormat.jm(); // HH:mm
-    DateTime dateTime = format.parse(time);
-    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+    // Define a RegExp pattern to match the expected 'h:mm AM/PM' format
+    final timePattern = RegExp(r'^(1[0-2]|0?[1-9]):([0-5][0-9])\s?(AM|PM)$', caseSensitive: false);
+
+    // Check if the time matches the expected format
+    if (timePattern.hasMatch(time.trim())) {
+      // If valid, split the time into parts
+      final parts = time.split(RegExp(r'[:\s]'));
+      int hour = int.parse(parts[0]);
+      int minute = int.parse(parts[1]);
+      String period = parts[2].toUpperCase();
+
+      // Convert to 24-hour format if needed
+      if (period == 'PM' && hour < 12) hour += 12;
+      if (period == 'AM' && hour == 12) hour = 0;
+
+      return TimeOfDay(hour: hour, minute: minute);
+    } else {
+      throw FormatException("Invalid time format. Please use 'h:mm AM/PM' format.");
+    }
   }
 
-// Helper function to compare two TimeOfDay objects
+
+
+
   bool _isTimeBefore(TimeOfDay time1, TimeOfDay time2) {
-    final now = DateTime.now();
-    final dateTime1 = DateTime(now.year, now.month, now.day, time1.hour, time1.minute);
-    final dateTime2 = DateTime(now.year, now.month, now.day, time2.hour, time2.minute);
-
-    return dateTime1.isBefore(dateTime2);
+    return (time1.hour < time2.hour) ||
+        (time1.hour == time2.hour && time1.minute < time2.minute);
   }
-  // Widget for the Date field
+
   Widget _buildDateField({
     required String labelText,
     required IconData icon,
@@ -315,7 +340,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
           borderRadius: BorderRadius.circular(10.0),
           borderSide: BorderSide.none,
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
     );
   }

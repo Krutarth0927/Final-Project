@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stayez/category/register_form.dart';
 import 'package:stayez/color.dart';
@@ -50,7 +51,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
   @override
   void dispose() {
     super.dispose();
-
   }
 
   void _saveData() async {
@@ -67,9 +67,17 @@ class _RegistrationFormState extends State<RegistrationForm> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
+      // Format DOB as "dd-MM-yyyy" before saving
+      String formattedDob;
+      if (dob != null) {
+        formattedDob = DateFormat('dd-MM-yyyy').format(dob!);
+      } else {
+        formattedDob = '';
+      }
+
       Map<String, dynamic> user = {
         'fullName': fullNameController.text,
-        'dob': dob?.toIso8601String(),
+        'dob': formattedDob, // Use formatted DOB here
         'mobileNo': mobileNoController.text,
         'address': address,
         'collageName': collageName,
@@ -153,7 +161,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       setState(() {
                         dob = picked;
                         dateController.text =
-                            '${dob!.day}/${dob!.month}/${dob!.year}';
+                        '${dob!.day}/${dob!.month}/${dob!.year}';
                       });
                     }
                   },
@@ -162,6 +170,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       labelText: 'Date of Birth',
                       prefixIcon: Icon(Icons.calendar_today),
                       border: OutlineInputBorder(),
+                      errorText: dob == null
+                          ? 'Please select your date of birth'
+                          : (DateTime.now().difference(dob!).inDays < 6570
+                          ? 'You must be at least 18 years old'
+                          : null),
                     ),
                     child: Text(
                       dob == null

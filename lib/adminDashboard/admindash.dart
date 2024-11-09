@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stayez/adminDashboard/Payment.dart';
 import 'package:stayez/adminDashboard/Staffmember.dart';
 import 'package:stayez/adminDashboard/adminservices.dart';
 import 'package:stayez/adminDashboard/complint.dart';
@@ -165,14 +166,14 @@ class _AdiminDashState extends State<AdiminDash> {
               ListTile(
                 leading: Icon(Icons.payment),
                 title: Text('Fees Payment'),
-                // onTap: () {
-                //   Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //           builder: (context) => AdminSendPhotoPage()));
-                //   // // Handle contact navigation
-                //   // // Close the drawer
-                // },
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AdminSendPhotoPage()));
+                  // // Handle contact navigation
+                  // // Close the drawer
+                },
               ),
               ListTile(
                 leading: Icon(Icons.home),
