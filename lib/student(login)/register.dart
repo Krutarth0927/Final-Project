@@ -86,7 +86,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
         'password': passwordController.text,
         'roomNo': roomNoController.text,
       };
-
+    _saveData();
       DatabaseHelper db = DatabaseHelper();
       int userId = await db.saveUser(user); // Save and get the inserted ID
       print(userId);
@@ -129,22 +129,21 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
                   ),
-                  maxLength: 20, // Set the maximum number of characters to 20
+                  maxLength: 20,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your full name';
                     }
-                    // Check if the input contains more than 20 characters
                     if (value.length > 20 || value.length < 3) {
-                      return 'Please enter no more than 20 characters and not \n less than 3';
+                      return 'Please enter no more than 20 characters and not less than 3';
                     }
-                    // Check if the input contains only alphabetic characters (no spaces)
                     if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
                       return 'Please enter only alphabetical characters';
                     }
                     return null;
                   },
                 ),
+
                 SizedBox(height: 10),
                 InkWell(
                   onTap: () async {
@@ -265,7 +264,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     decoration: InputDecoration(
                       labelText: 'Current Course',
                       border: OutlineInputBorder(),
-                      //     icon: Icon(Icons.school), // Add your desired icon here
                     ),
                     items: courses.map((String course) {
                       return DropdownMenuItem<String>(
@@ -288,6 +286,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       return null;
                     },
                   ),
+
+
                 ),
                 SizedBox(height: 10),
                 TextFormField(
