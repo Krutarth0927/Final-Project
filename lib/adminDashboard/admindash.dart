@@ -556,11 +556,6 @@ class _StudentState extends State<Student> {
     );
   }
 }
-//  Future<List<Map<String, dynamic>>> _fetchAllUsers() async {
-//     DatabaseHelper db = DatabaseHelper();
-//     return await db.getAllUsers();
-//   }
-// }
 
 class UpdateUserPage extends StatefulWidget {
   final String mobileNo; // Pass mobile number
@@ -621,7 +616,6 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
               TextFormField(
                 controller: passwordController,
                 decoration: InputDecoration(labelText: 'Password'),
-
               ),
               SizedBox(height: 20),
               ElevatedButton(

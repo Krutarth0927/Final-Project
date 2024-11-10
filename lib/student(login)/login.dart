@@ -11,7 +11,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   bool _isPasswordVisible = false;
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -144,16 +143,20 @@ class _LoginPageState extends State<LoginPage> {
                             prefixIcon: Icon(Icons.lock),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible; // Toggle visibility
+                                  _isPasswordVisible =
+                                      !_isPasswordVisible; // Toggle visibility
                                 });
                               },
                             ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10), // Rounded shape
+                              borderRadius:
+                                  BorderRadius.circular(10), // Rounded shape
                             ),
                           ),
                           obscureText: !_isPasswordVisible,

@@ -74,7 +74,7 @@ class DatabaseHelper {
         )
       ''');
 
-     await db.execute('''
+    await db.execute('''
       CREATE TABLE image_uploads (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         file_path TEXT NOT NULL,

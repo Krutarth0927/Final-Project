@@ -44,9 +44,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   // String? roomNo;
 
-  final List<String> categories = ['General', 'OBC', 'SC', 'ST'];
   final List<String> courses = ['B.Sc', 'B.Tech', 'M.Sc', 'M.Tech'];
-  final List<String> religions = ['Hindu', 'Muslim', 'Christian', 'Other'];
 
   @override
   void dispose() {
@@ -161,7 +159,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       setState(() {
                         dob = picked;
                         dateController.text =
-                        '${dob!.day}/${dob!.month}/${dob!.year}';
+                            '${dob!.day}/${dob!.month}/${dob!.year}';
                       });
                     }
                   },
@@ -173,8 +171,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       errorText: dob == null
                           ? 'Please select your date of birth'
                           : (DateTime.now().difference(dob!).inDays < 6570
-                          ? 'You must be at least 18 years old'
-                          : null),
+                              ? 'You must be at least 18 years old'
+                              : null),
                     ),
                     child: Text(
                       dob == null

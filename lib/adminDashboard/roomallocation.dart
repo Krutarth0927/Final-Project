@@ -234,7 +234,6 @@ class AddRoomPage extends StatelessWidget {
   void dispose() {
     _numberController.dispose();
     _bedsController.dispose();
-
   }
 
   @override
@@ -246,12 +245,12 @@ class AddRoomPage extends StatelessWidget {
           backgroundColor: accentColor,
           title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(right: 35),
-                child: Text(
-                  "Add Room",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: const EdgeInsets.only(right: 35),
+            child: Text(
+              "Add Room",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -272,12 +271,14 @@ class AddRoomPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Room number validation to accept only numbers
-                  if (_numberController.text.isEmpty || !RegExp(r'^\d+$').hasMatch(_numberController.text)) {
+                  if (_numberController.text.isEmpty ||
+                      !RegExp(r'^\d+$').hasMatch(_numberController.text)) {
                     showError(context, "Room number must be numeric");
                     return;
                   }
 
-                  if (int.tryParse(_bedsController.text) == null || int.parse(_bedsController.text) <= 0) {
+                  if (int.tryParse(_bedsController.text) == null ||
+                      int.parse(_bedsController.text) <= 0) {
                     showError(context, "Beds must be a positive integer");
                     return;
                   }
@@ -294,7 +295,6 @@ class AddRoomPage extends StatelessWidget {
                 child: Text("Add Room", style: TextStyle(color: black)),
                 style: ElevatedButton.styleFrom(backgroundColor: buttonColor),
               ),
-
             ],
           ),
         ),
@@ -302,6 +302,7 @@ class AddRoomPage extends StatelessWidget {
     );
   }
 }
+
 class EditRoomPage extends StatelessWidget {
   final Room room;
   final Function(int, String, int) onRoomUpdated;
@@ -361,12 +362,14 @@ class EditRoomPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Room number validation to accept only numbers
-                  if (_numberController.text.isEmpty || !RegExp(r'^\d+$').hasMatch(_numberController.text)) {
+                  if (_numberController.text.isEmpty ||
+                      !RegExp(r'^\d+$').hasMatch(_numberController.text)) {
                     showError(context, "Room number must be numeric");
                     return;
                   }
 
-                  if (int.tryParse(_bedsController.text) == null || int.parse(_bedsController.text) <= 0) {
+                  if (int.tryParse(_bedsController.text) == null ||
+                      int.parse(_bedsController.text) <= 0) {
                     showError(context, "Beds must be a positive integer");
                     return;
                   }
@@ -386,7 +389,6 @@ class EditRoomPage extends StatelessWidget {
                   backgroundColor: buttonColor,
                 ),
               ),
-
             ],
           ),
         ),

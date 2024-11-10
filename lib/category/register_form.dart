@@ -46,12 +46,12 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
         appBar: AppBar(
           title: const Center(
               child: Padding(
-                padding: EdgeInsets.only(right: 35),
-                child: Text(
-                  "Daily Register",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )),
+            padding: EdgeInsets.only(right: 35),
+            child: Text(
+              "Daily Register",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
           backgroundColor: accentColor,
         ),
         body: Padding(
@@ -127,8 +127,17 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                     labelText: "Reason",
                     icon: Icons.text_snippet,
                     readOnly: false,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a reason';
+                      }
+                      if (RegExp(r'[0-9]').hasMatch(value) ||
+                          value.trim().isEmpty) {
+                        return 'Reason cannot contain numbers or be only spaces';
+                      }
+                      return null;
+                    },
                   ),
-
                   SizedBox(height: 30),
 
                   Center(
@@ -139,9 +148,9 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                             'name': nameController.text,
                             'room_no': roomNoController.text,
                             'entry_date_time':
-                            '$currentDate ${entryTimeController.text}',
+                                '$currentDate ${entryTimeController.text}',
                             'exit_date_time':
-                            '$currentDate ${exitTimeController.text}',
+                                '$currentDate ${exitTimeController.text}',
                             'reason': reasonController.text,
                           }).then((value) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -149,8 +158,6 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
                             );
                           });
                           // Clear all the fields after successful submission
-                          nameController.clear();
-                          roomNoController.clear();
                           entryTimeController.clear();
                           exitTimeController.clear();
                           reasonController.clear();
@@ -209,6 +216,7 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
     required IconData icon,
     TextInputType keyboardType = TextInputType.text,
     bool readOnly = true,
+    String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
@@ -225,12 +233,17 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter $labelText';
-        }
-        return null;
-      },
+      validator: validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter $labelText';
+            }
+            if (labelText == "Name" &&
+                (RegExp(r'[0-9]').hasMatch(value) || value.trim().isEmpty)) {
+              return 'Name cannot contain numbers or spaces only';
+            }
+            return null;
+          },
     );
   }
 
@@ -259,30 +272,33 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
       ),
       onTap: enabled
           ? () async {
-        TimeOfDay? pickedTime = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.now(),
-        );
-        if (pickedTime != null) {
-          if (isExitTime && entryTimeController.text.isNotEmpty) {
-            TimeOfDay entryTime = _parseTime(entryTimeController.text);
-            if (_isTimeBefore(pickedTime, entryTime)) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Exit time must be after entry time')),
+              TimeOfDay? pickedTime = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.now(),
               );
-            } else if (pickedTime == entryTime) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Exit time cannot be the same as entry time')),
-              );
-            } else {
-              controller.text = pickedTime.format(context);
+              if (pickedTime != null) {
+                if (isExitTime && entryTimeController.text.isNotEmpty) {
+                  TimeOfDay entryTime = _parseTime(entryTimeController.text);
+                  if (_isTimeBefore(pickedTime, entryTime)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Exit time must be after entry time')),
+                    );
+                  } else if (pickedTime == entryTime) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              'Exit time cannot be the same as entry time')),
+                    );
+                  } else {
+                    controller.text = pickedTime.format(context);
+                  }
+                } else {
+                  controller.text = pickedTime.format(context);
+                  if (onTimePicked != null) onTimePicked(pickedTime);
+                }
+              }
             }
-          } else {
-            controller.text = pickedTime.format(context);
-            if (onTimePicked != null) onTimePicked(pickedTime);
-          }
-        }
-      }
           : null,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -295,7 +311,8 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
 
   TimeOfDay _parseTime(String time) {
     // Define a RegExp pattern to match the expected 'h:mm AM/PM' format
-    final timePattern = RegExp(r'^(1[0-2]|0?[1-9]):([0-5][0-9])\s?(AM|PM)$', caseSensitive: false);
+    final timePattern = RegExp(r'^(1[0-2]|0?[1-9]):([0-5][0-9])\s?(AM|PM)$',
+        caseSensitive: false);
 
     // Check if the time matches the expected format
     if (timePattern.hasMatch(time.trim())) {
@@ -311,12 +328,10 @@ class _DailyRegisterFormState extends State<DailyRegisterForm> {
 
       return TimeOfDay(hour: hour, minute: minute);
     } else {
-      throw FormatException("Invalid time format. Please use 'h:mm AM/PM' format.");
+      throw FormatException(
+          "Invalid time format. Please use 'h:mm AM/PM' format.");
     }
   }
-
-
-
 
   bool _isTimeBefore(TimeOfDay time1, TimeOfDay time2) {
     return (time1.hour < time2.hour) ||

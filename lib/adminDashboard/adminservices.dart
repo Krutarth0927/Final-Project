@@ -190,6 +190,7 @@ class ServiceProvider {
     };
   }
 }
+
 class AddServiceProviderPage extends StatelessWidget {
   final Function(ServiceProvider) onServiceAdded;
   final List<ServiceProvider> serviceProviders;
@@ -226,19 +227,18 @@ class AddServiceProviderPage extends StatelessWidget {
             child: Column(
               children: [
                 TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: "Name"),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Name is required";
-                    } else if (value.length < 2) {
-                      return "Name must be at least 2 characters";
-                    } else if (RegExp(r'[0-9]').hasMatch(value)) {
-                      return "Name cannot contain numbers";
-                    }
-                    return null;
-                  }
-                ),
+                    controller: _nameController,
+                    decoration: InputDecoration(labelText: "Name"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Name is required";
+                      } else if (value.length < 2) {
+                        return "Name must be at least 2 characters";
+                      } else if (RegExp(r'[0-9]').hasMatch(value)) {
+                        return "Name cannot contain numbers";
+                      }
+                      return null;
+                    }),
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _roleController,

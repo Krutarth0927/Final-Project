@@ -4,7 +4,6 @@ import 'package:stayez/color.dart';
 import 'package:stayez/database/allDatabase.dart';
 
 class ProfilePage extends StatefulWidget {
-
   const ProfilePage({super.key});
 
   @override

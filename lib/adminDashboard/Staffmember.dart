@@ -44,6 +44,7 @@ class _AdminStaffMemberPageState extends State<AdminStaffMemberPage> {
       _saveStaffMembers();
     });
   }
+
   void updateStaffMember(StaffMember updatedStaff) {
     setState(() {
       final staff = staffMembers.firstWhere((s) => s.id == updatedStaff.id);
@@ -53,7 +54,6 @@ class _AdminStaffMemberPageState extends State<AdminStaffMemberPage> {
       _saveStaffMembers();
     });
   }
-
 
   void deleteStaffMember(int staffId) {
     setState(() {
@@ -185,6 +185,7 @@ class StaffMember {
     };
   }
 }
+
 class AddStaffPage extends StatefulWidget {
   final Function(StaffMember) onStaffAdded;
   final List<StaffMember> staffMembers;
@@ -299,6 +300,7 @@ class _AddStaffPageState extends State<AddStaffPage> {
     );
   }
 }
+
 class EditStaffPage extends StatefulWidget {
   final StaffMember staff;
   final Function(StaffMember) onStaffUpdated; // Expecting StaffMember
@@ -336,7 +338,6 @@ class _EditStaffPageState extends State<EditStaffPage> {
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-
             key: _formKey,
             child: Column(
               children: [
@@ -393,14 +394,16 @@ class _EditStaffPageState extends State<EditStaffPage> {
                         role: _roleController.text,
                         phone: _phoneController.text,
                       );
-                      widget.onStaffUpdated(updatedStaff); // Pass updated object
+                      widget
+                          .onStaffUpdated(updatedStaff); // Pass updated object
                       Navigator.of(context).pop();
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor
+                  style: ElevatedButton.styleFrom(backgroundColor: buttonColor),
+                  child: Text(
+                    "Update Staff",
+                    style: TextStyle(color: black),
                   ),
-                  child: Text("Update Staff",style: TextStyle(color: black),),
                 ),
               ],
             ),

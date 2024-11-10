@@ -120,22 +120,22 @@ class _AdminSendPhotoPageState extends State<AdminSendPhotoPage> {
               children: [
                 _image != null
                     ? Column(
-                  children: [
-                    Image.file(_image!), // Display the selected image
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: _deleteImage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                        Colors.red, // Background color for delete button
-                      ),
-                      child: Text('Delete Image',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ],
-                )
+                        children: [
+                          Image.file(_image!), // Display the selected image
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: _deleteImage,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors
+                                  .red, // Background color for delete button
+                            ),
+                            child: Text('Delete Image',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      )
                     : Text('No image selected',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _pickImage,
@@ -148,24 +148,24 @@ class _AdminSendPhotoPageState extends State<AdminSendPhotoPage> {
                 // Only show OK button when an image is selected
                 _image != null
                     ? ElevatedButton(
-                  onPressed: () {
-                    _saveImage(_image!); // Save the image when OK is pressed
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor, // Background color
-                  ),
-                  child: Text(
-                      _isImageUploaded ? 'Photo Sent' : 'OK',
-                      style: TextStyle(color: black)),
-                )
+                        onPressed: () {
+                          _saveImage(
+                              _image!); // Save the image when OK is pressed
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: buttonColor, // Background color
+                        ),
+                        child: Text(_isImageUploaded ? 'Photo Sent' : 'OK',
+                            style: TextStyle(color: black)),
+                      )
                     : Container(),
                 SizedBox(height: 20),
                 // Message to confirm if the photo has been uploaded
                 _isImageUploaded
                     ? Text(
-                  'Photo has been sent successfully!',
-                  style: TextStyle(color: black, fontSize: 20),
-                )
+                        'Photo has been sent successfully!',
+                        style: TextStyle(color: black, fontSize: 20),
+                      )
                     : Container(),
               ],
             ),
